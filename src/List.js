@@ -25,6 +25,24 @@ class List extends Component {
               </li>;
           })}
         </ul>
+        <h2>Travel Essentials</h2>
+        <ul>
+          {this.props.travelItems.map(res => {
+            return <li>{res}</li>;
+          })}
+        </ul>
+        <h2>Carry-on Items</h2>
+        <ul>
+          {this.props.carryOnItems.map(res => {
+            return <li>{res}</li>;
+          })}
+        </ul>
+        <h2>Misc. Items</h2>
+        <ul>
+          {this.props.miscItems.map(res => {
+            return <li>{res}</li>;
+          })}
+        </ul>
       </Fragment>;
   }
 }

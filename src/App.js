@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
-import firebase from './firebase';
-import standardClothes from './listItems';
-import toiletries from './listItems';
+// import firebase from './firebase';
 import Header from './Header';
+import TripSelector from './TripSelector';
 import List from './List';
+import {
+  standardClothes,
+  toiletries,
+  travelItems,
+  carryOnItems,
+  miscItems
+} from "./listItems";
 
-const dbRef = firebase.database().ref();
-const users = firebase.database().ref("users");
+// const dbRef = firebase.database().ref();
+// const users = firebase.database().ref("users");
 
 // const handleClick = () => {
 //   users.push({basicClothes})
@@ -21,19 +27,23 @@ const users = firebase.database().ref("users");
 
 
 class App extends Component {
-  // constructor() {
-  //   super();
-  //   this.state = {
-  //     standardClothes,
-  //     toiletries
-  //   }
-  // }
+  constructor() {
+    super();
+    this.state = {
+      standardClothes,
+      toiletries,
+      travelItems,
+      carryOnItems,
+      miscItems
+    }
+  }
 
   render() {
     return (
       <div className="App">
         <Header />
-        <List clothes={standardClothes} toiletries={toiletries}/>
+        <TripSelector />
+        <List clothes={this.state.standardClothes} toiletries={this.state.toiletries} travelItems={this.state.travelItems} carryOnItems={this.state.carryOnItems} miscItems={this.state.miscItems}/>
       </div>
     );
   }
