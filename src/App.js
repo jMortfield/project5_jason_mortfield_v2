@@ -1,25 +1,39 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import firebase from './firebase';
+import standardClothes from './listItems';
+import toiletries from './listItems';
+import Header from './Header';
+import List from './List';
+
+const dbRef = firebase.database().ref();
+const users = firebase.database().ref("users");
+
+// const handleClick = () => {
+//   users.push({basicClothes})
+// }
+
+// const handleSubmit = () => {
+//   users.push({Jason: basicClothes})
+// }
+
+
+
 
 class App extends Component {
+  // constructor() {
+  //   super();
+  //   this.state = {
+  //     standardClothes,
+  //     toiletries
+  //   }
+  // }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Header />
+        <List clothes={standardClothes} toiletries={toiletries}/>
       </div>
     );
   }
