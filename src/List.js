@@ -1,7 +1,23 @@
 import React, {Component, Fragment} from 'react';
 
+
 class List extends Component {
-  render() {
+    // newClothes = () => {
+    //     const basicClothes = this.props.clothes.filter((item) => {
+    //         console.log(item);
+    //         return item.isCold === false && item.isHot === false;
+    //     })
+    //     return basicClothes.map(res => {
+    //       return (<li>
+    //           <ul>
+    //             <li>{res.name}</li>
+    //             <li>{res.quantity}</li>
+    //           </ul>
+    //         </li>
+    //     )})
+    // }
+
+    render() {
     return <Fragment>
         <h2>Standard Clothes</h2>
         <ul>
