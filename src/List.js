@@ -2,32 +2,22 @@ import React, {Component, Fragment} from 'react';
 
 
 class List extends Component {
-    // newClothes = () => {
-    //     const basicClothes = this.props.clothes.filter((item) => {
-    //         console.log(item);
-    //         return item.isCold === false && item.isHot === false;
-    //     })
-    //     return basicClothes.map(res => {
-    //       return (<li>
-    //           <ul>
-    //             <li>{res.name}</li>
-    //             <li>{res.quantity}</li>
-    //           </ul>
-    //         </li>
-    //     )})
-    // }
-
     render() {
-    return <Fragment>
+    if (this.props.clothes) {
+    return (
+    <Fragment>
+        {/* Map throguh each list and render as li's */}
         <h2>Standard Clothes</h2>
         <ul>
           {this.props.clothes.map(res => {
-            return <li>
+            //   console.log(res);
+            return (<li>
                 <ul>
                   <li>{res.name}</li>
                   <li>{res.quantity}</li>
                 </ul>
-              </li>;
+            </li>);
+            
           })}
         </ul>
         <h2>Toiletries</h2>
@@ -59,7 +49,9 @@ class List extends Component {
             return <li>{res}</li>;
           })}
         </ul>
-      </Fragment>;
+    </Fragment>);
+        
+    }
   }
 }
 
