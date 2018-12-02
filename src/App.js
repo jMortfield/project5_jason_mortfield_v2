@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import firebase from './firebase';
+// import firebase from './firebase';
+import firebase, { auth, provider } from "./firebase.js";
+import Login from './Login';
 import SaveList from './SaveList';
 import Header from './Header';
 import TripSelector from './TripSelector';
@@ -25,8 +27,6 @@ import {
 // }
 
 
-
-
 class App extends Component {
   constructor() {
     super();
@@ -40,17 +40,56 @@ class App extends Component {
       miscItems,
       duration: "extraShort",
       temperature: "isCold",
-      userName: "",
-      nameObject: {},
+      email: "",
       listName: "",
       listObject: {},
-      fireBase: {}
+      firebaseObject: {},
+      user: null,
+      uid: null,
+      destination: "",
+      destinationObject: {},
+      packingObject: {}
     };
+    // handleChangeAuth = (e) => {
+    //   /* ... */
+    // }
   }
 
-  
-// Filter clothing list based on selected temperature
-// *** STRETCH GOAL - Add more conditions (isWarm, isCool) ***
+  componentDidMount() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.setState({ 
+          user,
+          uid: user.uid,
+          email: user.email
+        });
+      }
+    });
+  }
+
+  login = () => {
+    auth.signInWithPopup(provider).then(result => {
+      const user = result.user;
+      this.setState({
+        user,
+        uid: user.uid,
+        email: user.email
+      });
+    });
+  };
+
+  logout = () => {
+    auth.signOut().then(() => {
+      this.setState({
+        user: null,
+        uid: null,
+        email: null
+      });
+    });
+  };
+
+  // Filter clothing list based on selected temperature
+  // *** STRETCH GOAL - Add more conditions (isWarm, isCool) ***
   filteredClothesList = () => {
     return this.state.clothes.filter(item => {
       // Uses val of temp selector as index of clothing item
@@ -58,30 +97,31 @@ class App extends Component {
     });
   };
 
-  resetQuantity = (element) => {
-      element.quantity = 0
-    }    
-  
+  // Reset quantity of clothes when user submits form
+  resetQuantity = element => {
+    element.quantity = 0;
+  };
 
-  quantityChange = (element) => {
-    switch(this.state.duration) {
-      case 'extraShort':
+  // Conditionals for quantity change based on duration of trip
+  quantityChange = element => {
+    switch (this.state.duration) {
+      case "extraShort":
         element.quantity += 3;
         return element;
-      case 'short':
+      case "short":
         element.quantity += 6;
         return element;
-      case 'long':
+      case "long":
         element.quantity += 8;
         return element;
-      case 'extraLong':
+      case "extraLong":
         element.quantity += 10;
         return element;
-      default :
-        console.log("DIDN'T WORK!!!!!")
+      default:
+        console.log("DIDN'T WORK!!!!!");
         return element;
-    } 
-  }
+    }
+  };
 
   // Changes state of either temp or duration when user changes from dropdown menu
   handleChange = e => {
@@ -92,13 +132,12 @@ class App extends Component {
 
   // Sets new clothes array (to be rendered) to filtered list, shows list
   handleSubmit = e => {
-
     // console.log(this.filteredClothesList());
     e.preventDefault();
     // this.resetQuantity();
     this.setState({
       filteredClothes: this.filteredClothesList().map(this.resetQuantity)
-    })
+    });
     this.setState({
       filteredClothes: this.filteredClothesList().map(this.quantityChange),
       showClothes: true
@@ -108,41 +147,64 @@ class App extends Component {
 
   pushToFirebase = e => {
     e.preventDefault();
-    const users = firebase.database().ref(this.state.userName);
-    // console.log(users)
+
+    // Create an object with all arrays for packing list
+    const packingObject = Object.assign(this.state.packingObject);
+    packingObject['clothes'] = this.state.filteredClothes; 
+    packingObject['toiletries'] = this.state.toiletries;
+    packingObject['travelItems'] = this.state.travelItems;
+    packingObject['carryOnItems'] = this.state.carryOnItems;
+    packingObject['miscItems'] = this.state.miscItems;
 
     // Create new object that saves packing list with key of list name
     const listObject = Object.assign(this.state.listObject);
-    listObject[this.state.listName]=this.state.filteredClothes;
+    listObject[this.state.listName] = packingObject;
     console.log(listObject);
 
-    // Create a new object that saves list object as value with key of username
-    const nameObject = Object.assign(this.state.nameObject);
-    nameObject[this.state.userName]=listObject;
-    console.log(nameObject);
+    // Create a new object that saves listObject with key of Destination
+    const destinationObject = Object.assign(this.state.destinationObject);
+    destinationObject[this.state.destination] = listObject;
+    console.log(destinationObject);
+
+    // Create a new object that saves destinationObject under users unique id to be pushed to firebase
+    const firebaseObject = Object.assign(this.state.firebaseObject);
+    firebaseObject[this.state.uid] = destinationObject;
+    console.log(firebaseObject);
+
     // this.setState({
     //   fireBase: newNewObj
     // }, function(){
     //   users.push(this.state.fireBase);
     // })
-  }
+  };
 
   render() {
     return (
       <div className="App">
-        <SaveList handleChange={this.handleChange} pushToFirebase={this.pushToFirebase}/>
+      <div className="header">
+        <Login user={this.state.user} login={this.login} logout={this.logout} />
         <Header />
         {/* Pass change and submit function to TripSelector component as props */}
-        <TripSelector handleChange={this.handleChange} handleSubmit={this.handleSubmit}/>
-        {/* Only show list is showClothes is set to true */}
+      </div>
+        <TripSelector
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+        />
+        {/* Only show list if showClothes is set to true */}
         {this.state.showClothes && (
+        <div>
+          <SaveList
+            handleChange={this.handleChange}
+            pushToFirebase={this.pushToFirebase}
+            />
           <List
             clothes={this.state.filteredClothes}
             toiletries={this.state.toiletries}
             travelItems={this.state.travelItems}
             carryOnItems={this.state.carryOnItems}
             miscItems={this.state.miscItems}
-          />
+            />
+          </div>  
         )}
       </div>
     );
