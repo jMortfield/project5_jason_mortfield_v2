@@ -17,7 +17,7 @@ import {
 } from "./listItems";
 
 // const dbRef = firebase.database().ref();
-const user = firebase.database().ref('users');
+// const user = firebase.database().ref('users');
 
 
 // const handleClick = () => {
@@ -77,7 +77,6 @@ class App extends Component {
         uid: user.uid,
         email: user.email
       });
-      this.createNewUser();
     });
   };
 
@@ -148,19 +147,9 @@ class App extends Component {
     // console.log(this.filteredClothesList());
   };
 
-  // Create unique user node in firebase only on first time they log in with Google account
 
-  createNewUser = () => {
-      let functions = require("firebase-functions");
-      // const admin = require("firebase-admin");
-      // admin.initializeApp(functions.config().firebase);
-
-      functions.auth.user().onCreate(event => {
-        user.push(this.state.uid);
-      })
-
-  }
-
+  
+  // Push info to firebase when SaveList is clicked
   pushToFirebase = e => {
     e.preventDefault();
 
@@ -187,12 +176,29 @@ class App extends Component {
     firebaseObject[this.state.uid] = destinationObject;
     console.log(firebaseObject);
 
-    // this.setState({
-    //   fireBase: newNewObj
-    // }, function(){
-    //   users.push(this.state.fireBase);
-    // })
+    // const dbRef = firebase.database().ref();
+    const users = firebase.database().ref('users');
+
+    this.setState({
+      firebaseObject
+    }, function(){
+      users.update(this.state.firebaseObject);
+      this.setState({
+        listObject: {},
+        firebaseObject: {},
+        destination: '',
+        listName: ''
+      })
+    })
+    
   };
+
+  // Reset firebaseObject state
+  resetFirebaseObject = () => {
+    this.setState({
+      firebaseObject: {}
+    })
+  }
 
   render() {
     return (
@@ -215,7 +221,7 @@ class App extends Component {
               <div>
               <SaveList
                 handleChange={this.handleChange}
-                pushToFirebase={this.pushToFirebase}
+                pushToFirebase={this.pushToFirebase} destination={this.state.destination} listName={this.state.listName}
                 />
               <List
                 clothes={this.state.filteredClothes}
