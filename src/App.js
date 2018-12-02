@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import './setup.css';
 // import firebase from './firebase';
 import firebase, { auth, provider } from "./firebase.js";
 import Login from './Login';
@@ -181,31 +182,37 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <div className="header">
-        <Login user={this.state.user} login={this.login} logout={this.logout} />
-        <Header />
+        <div className="header">
+          <div className="wrapper header__wrapper">
+          <Header />
+          <Login user={this.state.user} login={this.login} logout={this.logout} />
+          </div>
+        </div>
         {/* Pass change and submit function to TripSelector component as props */}
-      </div>
-        <TripSelector
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-        />
-        {/* Only show list if showClothes is set to true */}
-        {this.state.showClothes && (
-        <div>
-          <SaveList
-            handleChange={this.handleChange}
-            pushToFirebase={this.pushToFirebase}
-            />
-          <List
-            clothes={this.state.filteredClothes}
-            toiletries={this.state.toiletries}
-            travelItems={this.state.travelItems}
-            carryOnItems={this.state.carryOnItems}
-            miscItems={this.state.miscItems}
-            />
-          </div>  
-        )}
+        <div className="main">
+          <div className="wrapper main__wrapper">
+            <TripSelector
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+              />
+            {/* Only show list if showClothes is set to true */}
+            {this.state.showClothes && (
+              <div>
+              <SaveList
+                handleChange={this.handleChange}
+                pushToFirebase={this.pushToFirebase}
+                />
+              <List
+                clothes={this.state.filteredClothes}
+                toiletries={this.state.toiletries}
+                travelItems={this.state.travelItems}
+                carryOnItems={this.state.carryOnItems}
+                miscItems={this.state.miscItems}
+                />
+              </div>  
+            )}
+            </div>
+          </div>
       </div>
     );
   }

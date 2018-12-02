@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import "./login.css";
 
 class Login extends Component {
     render(){
-        return <div className="wrapper">
+        return <div>
             {this.props.user ? <button onClick={this.props.logout}>
                 Log Out
               </button> : <button onClick={this.props.login}>Log In</button>}

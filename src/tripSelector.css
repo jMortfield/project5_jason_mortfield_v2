@@ -1,0 +1,4 @@
+.tripInfoForm {
+    display: flex;
+    flex-direction: column;
+}
