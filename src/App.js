@@ -15,8 +15,9 @@ import {
   carryOnItems,
   miscItems
 } from "./listItems";
+import RetrieveList from './RetrieveList';
 
-// const dbRef = firebase.database().ref();
+const dbRef = firebase.database().ref();
 // const user = firebase.database().ref('users');
 
 
@@ -50,23 +51,38 @@ class App extends Component {
       uid: null,
       destination: "",
       destinationObject: {},
-      packingObject: {}
+      packingObject: {},
+      loggedOut: true,
+      showList: false
     };
     // handleChangeAuth = (e) => {
     //   /* ... */
     // }
   }
 
+  // Update userList state if user is logged in
+  updateUserList = () => {
+    if (this.state.uid) {
+      dbRef.on("value", snapshot => {
+        this.setState({
+          userList: snapshot.val().users[this.state.uid]
+        });
+        console.log(this.state.userList);
+      });
+    }
+  }
+
   componentDidMount() {
     auth.onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ 
+      if (this.state.uid) {
+        this.setState({
           user,
           uid: user.uid,
           email: user.email
         });
       }
     });
+    this.updateUserList();
   }
 
   login = () => {
@@ -75,9 +91,10 @@ class App extends Component {
       this.setState({
         user,
         uid: user.uid,
-        email: user.email
+        email: user.email,
+        loggedOut: false
       });
-    });
+    }); 
   };
 
   logout = () => {
@@ -85,7 +102,8 @@ class App extends Component {
       this.setState({
         user: null,
         uid: null,
-        email: null
+        email: null,
+        loggedOut: true
       });
     });
   };
@@ -147,66 +165,75 @@ class App extends Component {
     // console.log(this.filteredClothesList());
   };
 
-
-  
   // Push info to firebase when SaveList is clicked
   pushToFirebase = e => {
     e.preventDefault();
 
     // Create an object with all arrays for packing list
     const packingObject = Object.assign(this.state.packingObject);
-    packingObject['clothes'] = this.state.filteredClothes; 
-    packingObject['toiletries'] = this.state.toiletries;
-    packingObject['travelItems'] = this.state.travelItems;
-    packingObject['carryOnItems'] = this.state.carryOnItems;
-    packingObject['miscItems'] = this.state.miscItems;
+    packingObject["clothes"] = this.state.filteredClothes;
+    packingObject["toiletries"] = this.state.toiletries;
+    packingObject["travelItems"] = this.state.travelItems;
+    packingObject["carryOnItems"] = this.state.carryOnItems;
+    packingObject["miscItems"] = this.state.miscItems;
 
     // Create new object that saves packing list with key of list name
     const listObject = Object.assign(this.state.listObject);
     listObject[this.state.listName] = packingObject;
-    console.log(listObject);
 
     // Create a new object that saves listObject with key of Destination
     const destinationObject = Object.assign(this.state.destinationObject);
     destinationObject[this.state.destination] = listObject;
-    console.log(destinationObject);
 
     // Create a new object that saves destinationObject under users unique id to be pushed to firebase
     const firebaseObject = Object.assign(this.state.firebaseObject);
     firebaseObject[this.state.uid] = destinationObject;
-    console.log(firebaseObject);
 
-    // const dbRef = firebase.database().ref();
-    const users = firebase.database().ref('users');
+    const users = firebase.database().ref("users");
 
-    this.setState({
-      firebaseObject
-    }, function(){
-      users.update(this.state.firebaseObject);
-      this.setState({
-        listObject: {},
-        firebaseObject: {},
-        destination: '',
-        listName: ''
-      })
-    })
-    
+    // Updated firebaseObject and then updates firebase with new info
+    this.setState(
+      {
+        firebaseObject
+      },
+      function() {
+        users.update(this.state.firebaseObject);
+        this.resetFirebaseObject();
+      }
+    );
   };
 
   // Reset firebaseObject state
   resetFirebaseObject = () => {
     this.setState({
-      firebaseObject: {}
+      listObject: {},
+      firebaseObject: {},
+      destination: "",
+      listName: ""
+    });
+  };
+
+  // Show saved lists when user click Retrieve List button
+  showList = () => {
+    this.setState({
+      showList: true
     })
   }
+
 
   render() {
     return (
       <div className="App">
         <div className="header">
           <div className="wrapper header__wrapper">
-          <Header />
-          <Login user={this.state.user} login={this.login} logout={this.logout} />
+            <Header />
+            {this.state.uid && <RetrieveList showList={this.state.showList} userList={this.state.userList}
+            updateUserList={this.updateUserList} changeShowList={this.showList} uid={this.state.uid}/>}
+            <Login
+              user={this.state.user}
+              login={this.login}
+              logout={this.logout}
+            />
           </div>
         </div>
         {/* Pass change and submit function to TripSelector component as props */}
@@ -215,25 +242,30 @@ class App extends Component {
             <TripSelector
               handleChange={this.handleChange}
               handleSubmit={this.handleSubmit}
-              />
+            />
             {/* Only show list if showClothes is set to true */}
             {this.state.showClothes && (
               <div>
-              <SaveList
-                handleChange={this.handleChange}
-                pushToFirebase={this.pushToFirebase} destination={this.state.destination} listName={this.state.listName}
+                {this.state.uid && (
+                  <SaveList
+                    handleChange={this.handleChange}
+                    pushToFirebase={this.pushToFirebase}
+                    destination={this.state.destination}
+                    listName={this.state.listName}
+                  />
+                )}
+                {this.state.loggedOut && <p>Please login to save list</p>}
+                <List
+                  clothes={this.state.filteredClothes}
+                  toiletries={this.state.toiletries}
+                  travelItems={this.state.travelItems}
+                  carryOnItems={this.state.carryOnItems}
+                  miscItems={this.state.miscItems}
                 />
-              <List
-                clothes={this.state.filteredClothes}
-                toiletries={this.state.toiletries}
-                travelItems={this.state.travelItems}
-                carryOnItems={this.state.carryOnItems}
-                miscItems={this.state.miscItems}
-                />
-              </div>  
+              </div>
             )}
-            </div>
           </div>
+        </div>
       </div>
     );
   }
