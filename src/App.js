@@ -74,16 +74,22 @@ class App extends Component {
 
   componentDidMount() {
     auth.onAuthStateChanged(user => {
-      if (this.state.uid) {
+      if (user) {
         this.setState({
           user,
           uid: user.uid,
-          email: user.email
+          email: user.email,
+          loggedOut: false
         });
       }
     });
     this.updateUserList();
   }
+
+  // addUidToFirebase = () => {
+  //     const users = firebase.database().ref('users');
+  //     users.push({id:this.state.uid});
+  // }
 
   login = () => {
     auth.signInWithPopup(provider).then(result => {
@@ -95,6 +101,7 @@ class App extends Component {
         loggedOut: false
       });
     }); 
+    // this.addUidToFirebase();
   };
 
   logout = () => {
@@ -182,12 +189,12 @@ class App extends Component {
     listObject[this.state.listName] = packingObject;
 
     // Create a new object that saves listObject with key of Destination
-    const destinationObject = Object.assign(this.state.destinationObject);
-    destinationObject[this.state.destination] = listObject;
+    // const destinationObject = Object.assign(this.state.destinationObject);
+    // destinationObject[this.state.destination] = listObject;
 
-    // Create a new object that saves destinationObject under users unique id to be pushed to firebase
+    // Create a new object that saves listObject under users unique id to be pushed to firebase
     const firebaseObject = Object.assign(this.state.firebaseObject);
-    firebaseObject[this.state.uid] = destinationObject;
+    firebaseObject[this.state.uid] = listObject;
 
     const users = firebase.database().ref("users");
 
@@ -220,6 +227,16 @@ class App extends Component {
     })
   }
 
+  // Render saved list on page when clicked
+  showSavedList = (e) => {
+    dbRef.on("value", snapshot => {
+      const savedList = snapshot.val().users[this.state.uid][e.target.value]
+      this.setState({
+        showClothes: true,
+        filteredClothes: savedList.clothes
+      });
+    });
+  }
 
   render() {
     return (
@@ -228,7 +245,7 @@ class App extends Component {
           <div className="wrapper header__wrapper">
             <Header />
             {this.state.uid && <RetrieveList showList={this.state.showList} userList={this.state.userList}
-            updateUserList={this.updateUserList} changeShowList={this.showList} uid={this.state.uid}/>}
+            updateUserList={this.updateUserList} changeShowList={this.showList} uid={this.state.uid} showSavedList={this.showSavedList}/>}
             <Login
               user={this.state.user}
               login={this.login}
@@ -254,7 +271,9 @@ class App extends Component {
                     listName={this.state.listName}
                   />
                 )}
-                {this.state.loggedOut && <p>Please login to save list</p>}
+
+                {this.state.loggedOut && (
+                <p>Please login to save list</p>)}
                 <List
                   clothes={this.state.filteredClothes}
                   toiletries={this.state.toiletries}
