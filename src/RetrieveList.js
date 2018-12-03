@@ -22,7 +22,7 @@ class RetrieveList extends Component {
                     {Object.keys(this.props.userList).map(key => {
                       console.log(key);
                       return <li>
-                          <button onClick={this.props.showSavedList} value={key}>{key}</button>
+                          <button onClick={this.props.showSavedList} id={key}>{key}</button>
                         </li>;
                     })}
                   </ul>

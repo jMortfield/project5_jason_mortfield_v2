@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
 import './setup.css';
-// import firebase from './firebase';
 import firebase, { auth, provider } from "./firebase.js";
 import Login from './Login';
 import SaveList from './SaveList';
@@ -16,6 +15,7 @@ import {
   miscItems
 } from "./listItems";
 import RetrieveList from './RetrieveList';
+
 
 const dbRef = firebase.database().ref();
 // const user = firebase.database().ref('users');
@@ -230,63 +230,50 @@ class App extends Component {
   // Render saved list on page when clicked
   showSavedList = (e) => {
     dbRef.on("value", snapshot => {
-      const savedList = snapshot.val().users[this.state.uid][e.target.value]
+      const savedList = snapshot.val().users[this.state.uid][e.target.id]
       this.setState({
         showClothes: true,
-        filteredClothes: savedList.clothes
+        filteredClothes: savedList.clothes,
+        listName: e.target.id
+
       });
     });
   }
 
   render() {
-    return (
-      <div className="App">
-        <div className="header">
-          <div className="wrapper header__wrapper">
-            <Header />
-            {this.state.uid && <RetrieveList showList={this.state.showList} userList={this.state.userList}
-            updateUserList={this.updateUserList} changeShowList={this.showList} uid={this.state.uid} showSavedList={this.showSavedList}/>}
-            <Login
-              user={this.state.user}
-              login={this.login}
-              logout={this.logout}
-            />
+    return <div className="App">
+        <header className="header">
+          <div className="header-overlay">
+            <div className="wrapper header__wrapper">
+              {/* Header logo */}
+              <Header />
+              {/* Retrieve list section */}
+              {this.state.uid && <RetrieveList showList={this.state.showList} userList={this.state.userList} updateUserList={this.updateUserList} changeShowList={this.showList} uid={this.state.uid} showSavedList={this.showSavedList} />}
+              {/* Login button */}
+              <Login user={this.state.user} login={this.login} logout={this.logout} />
+            </div>
+            <div className="wrapper main__wrapper">
+              <TripSelector handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+            </div>
           </div>
-        </div>
+        </header>
         {/* Pass change and submit function to TripSelector component as props */}
-        <div className="main">
-          <div className="wrapper main__wrapper">
-            <TripSelector
-              handleChange={this.handleChange}
-              handleSubmit={this.handleSubmit}
-            />
+        {this.state.showClothes && <main className="main">
             {/* Only show list if showClothes is set to true */}
-            {this.state.showClothes && (
+            <section className="listArea">
+              {/* Save List Section */}
               <div>
-                {this.state.uid && (
-                  <SaveList
-                    handleChange={this.handleChange}
-                    pushToFirebase={this.pushToFirebase}
-                    destination={this.state.destination}
-                    listName={this.state.listName}
-                  />
-                )}
-
-                {this.state.loggedOut && (
-                <p>Please login to save list</p>)}
-                <List
-                  clothes={this.state.filteredClothes}
-                  toiletries={this.state.toiletries}
-                  travelItems={this.state.travelItems}
-                  carryOnItems={this.state.carryOnItems}
-                  miscItems={this.state.miscItems}
-                />
+                {this.state.uid && <SaveList handleChange={this.handleChange} pushToFirebase={this.pushToFirebase} destination={this.state.destination} listName={this.state.listName} />}
+                {/* Show if user is logged out - tells user to sign in to save list */}
+                {this.state.loggedOut && <p>Please login to save list</p>}
               </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
+              {/* Packing list section */}
+              <div className="packingListSection">
+                <List listName={this.state.listName} clothes={this.state.filteredClothes} toiletries={this.state.toiletries} travelItems={this.state.travelItems} carryOnItems={this.state.carryOnItems} miscItems={this.state.miscItems} />
+              </div>
+            </section>
+          </main>}
+      </div>;
   }
 }
 

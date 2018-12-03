@@ -1,0 +1,20 @@
+.listArea {
+    text-align: center;
+}
+
+.packingList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.listSection {
+    width: 33%;
+}
+
+.listSection ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}

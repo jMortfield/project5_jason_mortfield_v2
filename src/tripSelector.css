@@ -1,4 +1,17 @@
 .tripInfoForm {
     display: flex;
     flex-direction: column;
+    width: 100%;
+}
+
+.selectorItem {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+#submit {
+    width: 100%;
 }
