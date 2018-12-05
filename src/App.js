@@ -20,16 +20,6 @@ import {
 
 
 const dbRef = firebase.database().ref();
-// const user = firebase.database().ref('users');
-
-
-// const handleClick = () => {
-//   users.push({basicClothes})
-// }
-
-// const handleSubmit = () => {
-//   users.push({Jason: basicClothes})
-// }
 
 
 class App extends Component {
@@ -59,9 +49,6 @@ class App extends Component {
       showList: false,
       userImg: ""
     };
-    // handleChangeAuth = (e) => {
-    //   /* ... */
-    // }
   }
 
   // Update userList state if user is logged in
@@ -91,10 +78,7 @@ class App extends Component {
     this.updateUserList();
   }
 
-  // addUidToFirebase = () => {
-  //     const users = firebase.database().ref('users');
-  //     users.push({id:this.state.uid});
-  // }
+
 
   login = () => {
     auth.signInWithPopup(provider).then(result => {
@@ -106,12 +90,7 @@ class App extends Component {
         userImg: user.photoURL,
         loggedOut: false
       });
-      // firebase
-      //   .database()
-      //   .ref("users")
-      //   .update(this.state.uid);
     }); 
-    // this.addUidToFirebase();
   };
 
   logout = () => {

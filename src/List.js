@@ -13,7 +13,6 @@ class List extends Component {
             <h2>Standard Clothes</h2>
             <ul>
               {this.props.clothes.map(res => {
-                //   console.log(res);
                 return <li key={res.name}>
                     <ul className="listItem">
                       <input type="checkbox"/>
