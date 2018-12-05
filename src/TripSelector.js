@@ -1,15 +1,21 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import './tripSelector.css'
 
 
 class TripSelector extends Component {
 
     render () {
-        return <Fragment>
+        return <div className="wrapper tripSelector">
             {/* Call handleSbbmit prop passed from App.js */}
+            <h2 className="selectorHeader">
+              Enter your trip information and create the perfect packing
+              list
+            </h2>
             <form onSubmit={this.props.handleSubmit} className="tripInfoForm" action="">
               <div className="selectorItem">
-                <label htmlFor="duration">Duration</label>
+                <label htmlFor="duration" className="selectorLabel">
+                  Duration
+                </label>
                 {/* Call handleChange prop passed from App.js */}
                 <select onChange={this.props.handleChange} name="duration" id="duration">
                   <option value="extraShort">0-3 Days</option>
@@ -19,7 +25,9 @@ class TripSelector extends Component {
                 </select>
               </div>
               <div className="selectorItem">
-                <label htmlFor="temperature">Temperature</label>
+                <label htmlFor="temperature" className="selectorLabel">
+                  Temperature
+                </label>
                 {/* Call handleChange prop passed from App.js */}
                 <select onChange={this.props.handleChange} name="temperature" id="temperature">
                   <option value="isCold">Below 0 Degrees</option>
@@ -32,10 +40,10 @@ class TripSelector extends Component {
                 <label htmlFor="submit" className="visuallyhidden">
                   Submit
                 </label>
-                <input type="submit" id="submit" />
+                <input type="submit" id="submit" className="button"/>
               </div>
             </form>
-          </Fragment>;
+          </div>;
     }
 }
 

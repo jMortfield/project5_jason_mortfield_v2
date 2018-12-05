@@ -1,20 +1,22 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component} from 'react';
 import './App.css';
 import './setup.css';
 import firebase, { auth, provider } from "./firebase.js";
+import Logo from './Logo';
+import RetrieveList from './RetrieveList';
 import Login from './Login';
-import SaveList from './SaveList';
-import Header from './Header';
+import HeaderTitle from './HeaderTitle';
 import TripSelector from './TripSelector';
+import SaveList from './SaveList';
 import List from './List';
 import {
   clothes,
   toiletries,
   travelItems,
   carryOnItems,
-  miscItems
+  miscItems,
+  outdoorEquipment
 } from "./listItems";
-import RetrieveList from './RetrieveList';
 
 
 const dbRef = firebase.database().ref();
@@ -41,9 +43,10 @@ class App extends Component {
       travelItems,
       carryOnItems,
       miscItems,
+      outdoorEquipment,
       duration: "extraShort",
       temperature: "isCold",
-      email: "",
+      name: "",
       listName: "",
       listObject: {},
       firebaseObject: {},
@@ -53,7 +56,8 @@ class App extends Component {
       destinationObject: {},
       packingObject: {},
       loggedOut: true,
-      showList: false
+      showList: false,
+      userImg: ""
     };
     // handleChangeAuth = (e) => {
     //   /* ... */
@@ -78,7 +82,8 @@ class App extends Component {
         this.setState({
           user,
           uid: user.uid,
-          email: user.email,
+          name: user.displayName,
+          userImg: user.photoURL,
           loggedOut: false
         });
       }
@@ -97,9 +102,14 @@ class App extends Component {
       this.setState({
         user,
         uid: user.uid,
-        email: user.email,
+        name: user.displayName,
+        userImg: user.photoURL,
         loggedOut: false
       });
+      // firebase
+      //   .database()
+      //   .ref("users")
+      //   .update(this.state.uid);
     }); 
     // this.addUidToFirebase();
   };
@@ -159,9 +169,7 @@ class App extends Component {
 
   // Sets new clothes array (to be rendered) to filtered list, shows list
   handleSubmit = e => {
-    // console.log(this.filteredClothesList());
     e.preventDefault();
-    // this.resetQuantity();
     this.setState({
       filteredClothes: this.filteredClothesList().map(this.resetQuantity)
     });
@@ -169,7 +177,6 @@ class App extends Component {
       filteredClothes: this.filteredClothesList().map(this.quantityChange),
       showClothes: true
     });
-    // console.log(this.filteredClothesList());
   };
 
   // Push info to firebase when SaveList is clicked
@@ -184,19 +191,13 @@ class App extends Component {
     packingObject["carryOnItems"] = this.state.carryOnItems;
     packingObject["miscItems"] = this.state.miscItems;
 
-    // Create new object that saves packing list with key of list name
-    const listObject = Object.assign(this.state.listObject);
-    listObject[this.state.listName] = packingObject;
+    // Create firebase object that saves packing list with key of list name to be pushed to firebase
 
-    // Create a new object that saves listObject with key of Destination
-    // const destinationObject = Object.assign(this.state.destinationObject);
-    // destinationObject[this.state.destination] = listObject;
-
-    // Create a new object that saves listObject under users unique id to be pushed to firebase
     const firebaseObject = Object.assign(this.state.firebaseObject);
-    firebaseObject[this.state.uid] = listObject;
+    firebaseObject[this.state.listName] = packingObject;
 
-    const users = firebase.database().ref("users");
+
+    const users = firebase.database().ref("users/" + this.state.uid);
 
     // Updated firebaseObject and then updates firebase with new info
     this.setState(
@@ -223,7 +224,7 @@ class App extends Component {
   // Show saved lists when user click Retrieve List button
   showList = () => {
     this.setState({
-      showList: true
+      showList: !this.state.showList
     })
   }
 
@@ -246,32 +247,34 @@ class App extends Component {
           <div className="header-overlay">
             <div className="wrapper header__wrapper">
               {/* Header logo */}
-              <Header />
+              <Logo />
               {/* Retrieve list section */}
               {this.state.uid && <RetrieveList showList={this.state.showList} userList={this.state.userList} updateUserList={this.updateUserList} changeShowList={this.showList} uid={this.state.uid} showSavedList={this.showSavedList} />}
               {/* Login button */}
-              <Login user={this.state.user} login={this.login} logout={this.logout} />
+              <Login user={this.state.user} login={this.login} logout={this.logout} userImg={this.state.userImg} name={this.state.name} />
+              {/* Header hero title */}
             </div>
-            <div className="wrapper main__wrapper">
-              <TripSelector handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-            </div>
+            <HeaderTitle />
+            <TripSelector handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
           </div>
         </header>
         {/* Pass change and submit function to TripSelector component as props */}
         {this.state.showClothes && <main className="main">
-            {/* Only show list if showClothes is set to true */}
-            <section className="listArea">
-              {/* Save List Section */}
-              <div>
-                {this.state.uid && <SaveList handleChange={this.handleChange} pushToFirebase={this.pushToFirebase} destination={this.state.destination} listName={this.state.listName} />}
-                {/* Show if user is logged out - tells user to sign in to save list */}
-                {this.state.loggedOut && <p>Please login to save list</p>}
-              </div>
-              {/* Packing list section */}
-              <div className="packingListSection">
-                <List listName={this.state.listName} clothes={this.state.filteredClothes} toiletries={this.state.toiletries} travelItems={this.state.travelItems} carryOnItems={this.state.carryOnItems} miscItems={this.state.miscItems} />
-              </div>
-            </section>
+            <div className="wrapper main__wrapper">
+              {/* Only show list if showClothes is set to true */}
+              <section className="listArea">
+                {/* Save List Section */}
+                <div>
+                  {/* If user is logged out - tells user to sign in to save list. If user is signed in, show form to save list */}
+                  {this.state.user ? <SaveList handleChange={this.handleChange} pushToFirebase={this.pushToFirebase} destination={this.state.destination} listName={this.state.listName} /> : <p className="loginToSave">Please login to save list</p>}
+                 
+                </div>
+                {/* Packing list section */}
+                <div className="packingListSection">
+                  <List listName={this.state.listName} clothes={this.state.filteredClothes} toiletries={this.state.toiletries} travelItems={this.state.travelItems} carryOnItems={this.state.carryOnItems}outdoorEquipment={this.state.outdoorEquipment} miscItems={this.state.miscItems} />
+                </div>
+              </section>
+            </div>
           </main>}
       </div>;
   }

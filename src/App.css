@@ -1,3 +1,25 @@
+@import url("https://fonts.googleapis.com/css?family=Crimson+Text|Montserrat");
+
+/* 
+
+    font-family: 'Montserrat', sans-serif;
+
+    font-family: 'Crimson Text', serif;
+
+ */
+
+ h1, h2, h3, h4, h5, h6 {
+   font-family: 'Montserrat', sans-serif;
+   margin: 0;
+   padding: 0;
+   color: #030027;
+ }
+
+ p, li, a, button {
+   font-family: 'Crimson Text', serif;
+   color: #030027;
+ }
+
 .header {
   height: 100vh;
   background: url(./assets/packing-background.jpg);
@@ -8,7 +30,7 @@
 
 .header-overlay {
   height: 100vh;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.3));
+  background: linear-gradient(to bottom, rgba(186, 186, 186, 0.5), rgba(186,186,186,0.5));
 }
 
 .wrapper {
@@ -27,7 +49,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: solid red 2px;
+  /* border: solid red 2px; */
 }
 
 .listArea {
@@ -36,9 +58,27 @@
 }
 
 .packingListSection {
-  border: solid red 2px;
+  border: solid #030027 2px;
 }
 
 .main {
   height: 100vh;
+  padding-top: 40px;
+}
+
+.button {
+    background: #313e50;
+    color: #f2f3d9;
+    border: none;
+    padding: 10px 0;
+}
+
+.button:hover {
+    background: #f2f3d9;
+    color: #313e50;
+}
+
+.loginToSave {
+  text-align: center;
+  font-size: 2rem;
 }

@@ -1,39 +1,39 @@
 import React, {Component, Fragment} from 'react';
+import './retrieveList.css';
+
 
 class RetrieveList extends Component {
   componentDidMount() {
     this.props.updateUserList();
   }
 
+
   render() {
       
     return <Fragment>
-        <button onClick={this.props.changeShowList}>Retrieve List</button>
-        {this.props.showList && <div className="savedLists">
-            <h2>Saved Lists</h2>
-            <div>
-              <h3>Destination</h3>
-              <h3>List Name</h3>
-            </div>
-            <div>
+        {!this.props.showList && <button onClick={this.props.changeShowList} className="retrieveButton button">
+            Retrieve List
+          </button>}
+        {this.props.showList && <div className="savedListsMenu">
+            <div className="savedListHeader">
+              <button onClick={this.props.changeShowList} className="exitListButton button">
+                X
+              </button>
+                <h2 className="savedListsTitle">Saved Lists</h2>
+              </div>
+              <div className="savedLists">
               {console.log(this.props.userList)}
               {this.props.uid && <Fragment>
-                  <ul>
+                  <ul className="savedListList">
                     {Object.keys(this.props.userList).map(key => {
                       console.log(key);
-                      return <li>
-                          <button onClick={this.props.showSavedList} id={key}>{key}</button>
+                      return <li className="savedListItem">
+                          <button onClick={this.props.showSavedList} id={key} className="savedListButton button">
+                            {key}
+                          </button>
                         </li>;
                     })}
                   </ul>
-                  {/* <ul>
-                    {Object.keys(this.props.userList).map(key => {
-                      console.log(key);
-                      return <li>
-                          <button>{this.props.userList[key]}</button>
-                        </li>;
-                    })}
-                  </ul> */}
                 </Fragment>}
             </div>
           </div>}

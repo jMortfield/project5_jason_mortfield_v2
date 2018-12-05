@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
+import './saveList.css';
 
 class SaveList extends Component {
     render() {
         return <div>
-            <form onSubmit={this.props.pushToFirebase} action="">
-              {/* <label htmlFor="destination">Enter Destination</label>
-              <input onChange={this.props.handleChange} type="text" name="destination" id="destination" value={this.props.destination} /> */}
-              <label htmlFor="listName">Enter name of list</label>
+            <form onSubmit={this.props.pushToFirebase} action="" className="saveListForm">
+
+              <label htmlFor="listName" className="saveListLabel">Enter list name</label>
               <input onChange={this.props.handleChange} type="text" name="listName" id="listName" value={this.props.listName}/>
-              <input type="submit" />
+              <input type="submit" value="Save List"/>
             </form>
           </div>;
         

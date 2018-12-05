@@ -1,0 +1,51 @@
+.retrieveButton {
+    padding: 0 40px;
+}
+
+.savedListsMenu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    width: 30%;
+    border: #030027 2px solid;
+}
+
+.savedListHeader {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.exitListButton {
+    padding: 20px;
+    font-size: 2rem;
+    border-bottom: #030027 2px solid;
+    border-left: #030027 2px solid;
+}
+
+.savedLists {
+    width: 100%; 
+    text-align: center;
+}
+
+.savedListsTitle {
+    text-align: center;
+    flex-grow: 1;
+    padding: 16px 0;
+    border-bottom: 2px solid #030027;
+}
+
+.savedListList {
+    padding-top: 20px;
+    list-style: none;
+}
+
+.savedListItem {
+    margin-bottom: 15px;
+}
+
+.savedListButton {
+    width: 70%;
+    font-size: 2rem;
+}

@@ -1,0 +1,15 @@
+.saveListForm {
+    margin: 0 auto;
+    width: 50%;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.saveListLabel {
+    text-transform: capitalize;
+    text-align: center;
+    color: #030027;
+    font-size: 2rem;
+    font-weight: bold;
+}

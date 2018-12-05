@@ -1,20 +1,30 @@
-.listArea {
+.list {
     text-align: center;
 }
 
 .packingList {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-around;
     text-align: center;
 }
 
 .listSection {
-    width: 33%;
+    width: calc(33% - 40px);
+    padding: 40px 20px;
 }
+
+/* .listSection:nth-child(3n + 2){
+    margin: 0 30px;
+} */
 
 .listSection ul {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
 }

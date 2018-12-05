@@ -91,18 +91,136 @@ export const toiletries = [
     {
         name: 'toothpaste',
         quantity: 1
+    },
+    {
+        name: 'dental floss',
+        quantity: 1
+    },
+    {
+        name: 'deodorant',
+        quantity: 1
+    },
+    {
+        name: 'soap',
+        quantity: 1
     }
 ]
 
 export const travelItems = [
-    'Passport', 'Itinerary', 'Cash', 'Credit/Debit Cards','Insurance cards', 'Camera', 'Glasses/sunglasses'
+    {
+        name: 'Passport',
+        quantity: 1
+    }, 
+    {
+        name: 'Itinerary',
+        quantity: 1
+    },
+    {
+        name: 'Cash',
+        quantity: 1
+    },
+    {
+        name: 'Credit/Debit Cards',
+        quantity: 1
+    },
+    {
+        name: 'Insurance cards',
+        quantity: 1
+    },
+    {
+        name: 'Camera',
+        quantity: 1
+    },
+    {
+        name: 'Glasses/sunglasses',
+        quantity: 1
+    },
+    {
+        name: 'Money Belt',
+        quantity: 1
+    }
+    
 ]
 
 export const carryOnItems = [
-    'Books/e-books', 'Earbuds/headphones', 'Travel pillow/blanket', 'Ear plugs', 'Eye mask', 'Tissues', 'Snacks/gum'
+    {
+        name: 'Books/e-books',
+        quantity: 1
+    },
+    {
+        name: 'Earbuds/headphones',
+        quantity: 1
+    },
+    {
+        name: 'Travel pillow/blanket',
+        quantity: 1
+    },
+    {
+        name: 'Ear plugs',
+        quantity: 1
+    },
+    {
+        name: 'Eye mask',
+        quantity: 1
+    },
+    {
+        name: 'Tissues',
+        quantity: 1
+    },
+    {
+        name: 'Snacks/gum',
+        quantity: 1
+    }
 ]
 
 export const miscItems = [
-    'Cell phone', 'Laptop/tablet', 'Electronics chargers', 'Voltage adapter', 'Film/memory card', 'Medication'
+    {
+        name: 'Cell phone',
+        quantity: 1
+    },
+    {
+        name: 'Laptop/tablet',
+        quantity: 1
+    },
+    {
+        name: 'Electronics chargers',
+        quantity: 1
+    },
+    {
+        name: 'Voltage adapter',
+        quantity: 3
+    },
+    {
+        name: 'Film/memory card',
+        quantity: 1
+    },
+    {
+        name: 'Medication', 
+        quantity: 'varies'
+    }
+         
+]
+
+export const outdoorEquipment = [
+    {
+        name: 'Sleeping Bag',
+        quantity: 1
+    },
+    {
+        name: 'Tent',
+        quantity: 1
+    },
+    {
+        name: 'Sleeping Mat',
+        quantity: 1
+    },
+    {
+        name: 'Flashlight',
+        quantity: 1
+    },
+    {
+        name: 'Multitool',
+        quantity: 1
+    }
 ]
 
