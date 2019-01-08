@@ -76,7 +76,37 @@ class App extends Component {
       }
     });
     this.updateUserList();
+    // const localStorageRef = localStorage.getItem('filteredClothes');
+    // if (localStorageRef) {
+    //   this.setState({ 
+    //     showList: true,
+    //     filteredClothes: JSON.parse(localStorageRef)
+    //   })
+    // }
   }
+
+  componentDidUpdate() {
+    localStorage.setItem('filteredClothes', JSON.stringify(this.state.filteredClothes))
+  }
+
+
+  // componentDidMount() {
+  //   const { params } = this.props.match;
+  //   // First reinstate our localStorage
+  //   const localStorageRef = localStorage.getItem(params.storeId);
+  //   if (localStorageRef) {
+  //     this.setState({ order: JSON.parse(localStorageRef) })
+  //   }
+  //   this.ref = base.syncState(`${params.storeId}/fishes`, {
+  //     context: this,
+  //     state: 'fishes'
+  //   });
+  // }
+
+  // componentDidUpdate() {
+  //   localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order))
+  // }
+
 
 
 
@@ -188,6 +218,8 @@ class App extends Component {
         this.resetFirebaseObject();
       }
     );
+
+    alert("List saved!");
   };
 
   // Reset firebaseObject state
@@ -195,8 +227,7 @@ class App extends Component {
     this.setState({
       listObject: {},
       firebaseObject: {},
-      destination: "",
-      listName: ""
+      destination: ""
     });
   };
 
@@ -210,12 +241,13 @@ class App extends Component {
   // Render saved list on page when clicked
   showSavedList = (e) => {
     dbRef.on("value", snapshot => {
-      const savedList = snapshot.val().users[this.state.uid][e.target.id]
+      const savedList = snapshot.val().users[this.state.uid][e.currentTarget.id]
+      // If savedList doesn't exist (like when changing list name from a retrieved list), return nothing
+      if (!savedList) return null;
       this.setState({
         showClothes: true,
         filteredClothes: savedList.clothes,
-        listName: e.target.id
-
+        listName: e.currentTarget.id
       });
     });
   }
